@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8"/>
+	<title></title>
+	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+	<script src="https://code.highcharts.com/highcharts.js"></script>
+	<link rel="stylesheet" href="https://js.arcgis.com/4.8/esri/themes/dark/main.css">
+  	<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  	<link rel="stylesheet" href="site_css.css">
+  	<link rel="stylesheet" href="https://esri.github.io/calcite-maps/dist/css/calcite-maps-bootstrap.min-v0.7.css">
+  	<link rel="stylesheet" href="https://esri.github.io/calcite-maps/dist/css/calcite-maps-arcgis-4.x.min-v0.7.css">
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<script src="https://js.arcgis.com/4.8/"></script>
+	<script src="site_map.js"></script>
+	<script src="site.js"></script>
+	<script type="text/javascript">
+	</script>
+	<script type="text/javascript">
+		$( function() { //@window.onload
+			formInit(); //@site.js
+	 	});
+	    var dojoConfig = {
+	      packages: [{
+	        name: "bootstrap",
+	        location: "https://esri.github.io/calcite-maps/dist/vendor/dojo-bootstrap"
+	      },
+	      {
+	        name: "calcite-maps",
+	        location: "https://esri.github.io/calcite-maps/dist/js/dojo"
+	      }]
+	    };
+	    var dojoConfig = {
+	      has: {
+	        "esri-featurelayer-webgl": 1
+	      }
+	    };
+ 	</script>
+</head>
+<body class="calcite-maps calcite-nav-top">
+<nav class="navbar calcite-navbar navbar-fixed-top calcite-text-light calcite-bg-dark">
+	  <div class="calcite-title calcite-overflow-hidden">
+      <span class="calcite-title-main">用實價登錄看你家附近到底地價多少?</span>
+      <span class="calcite-title-divider hidden-xs"></span>
+      <span class="calcite-title-sub hidden-xs">目前僅提供台北市</span>
+    </div>
+</nav>
+<div class="calcite-panels calcite-panels-left calcite-text-light calcite-bg-dark panel-group">
+	<div id="panelInfo" class="panel collapse in">
+      <div id="headingInfo" class="panel-heading" role="tab">
+        <div class="panel-title">
+          <a class="panel-toggle" role="button" data-toggle="collapse" href="#collapseInfo"  aria-expanded="true" aria-controls="collapseInfo"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span><span class="panel-label">查詢定位</span></a> 
+          <a class="panel-close" role="button" data-toggle="collapse" tabindex="0" href="#panelInfo"><span class="esri-icon esri-icon-close" aria-hidden="true"></span></a>  
+        </div>
+   		</div>
+     	<div id="collapseInfo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingInfo">
+	        <div class="panel-body">
+	        	<div id="search-control-ui">
+					<div id="optionArea">
+				 		<input type=radio data-id="addressArea" id="rbAddress" name="optionArea" checked="" class="option">
+				 		<label for="rbAddress" style="cursor:pointer;"> address </label> 
+				 		<input type="radio" data-id="xyArea"   id="rbXY" name="optionArea" class="option">
+				 		<label for="rbXY" style="cursor:pointer;">  x,y </label>  
+				 		<input type="radio" data-id="locationArea"  id="rblocation" name="optionArea" class="option">
+				 		<label for="rblocation" style="cursor:pointer;">  map click</label>  
+					</div>
+					<div id="addressArea">
+				        <div class="calcite-text-light">請輸入查詢地址</div>
+				        <div>
+				        	台北市<input id="query-input" autofocus="" value="">
+				        	<input id="btnSearch" value="定位" type="button">	
+				        </div>
+	              
+			     	</div>
+			     	<div id="xyArea">
+				        <div class="calcite-text-light">Step1:請輸入經緯度XY</div>
+				        <div>東經：<span style="color:red;">*</span>&nbsp;<input id="WGS84lng" type="text" style="width:150px;" value="121.5351444"></div>
+				        <div>北緯：<span style="color:red;">*</span>&nbsp;<input id="WGS84lat" type="text" style="width:150px;" value="121.5351444"></div>
+				        <input type="button" id="btnPositXY" value="定位" style="margin-left:18px;">           
+			     	</div>
+			     	<div id="locationArea" >
+						<div class="calcite-text-light">Step1:地圖點選</div>      
+        			</div>
+		    	</div>
+		    	<table id="resultList" ></table>
+    			<div id="buffer">
+		    		<div class="calcite-text-light">Step2:請選擇你要的分析範圍</div>
+			 		<div id="slider">
+			 	 		<div id="custom-handle" class="ui-slider-handle"></div>
+			 		</div>
+	 			</div>
+	 			<div id="Layerlist">
+	 				<div class="calcite-text-light">Step3:請選擇你要的分析的圖層</div>
+	 				<!-- <input type="button" value="緩衝範圍" class="ToggleLayer" data-id="bufferLayer1"></br> -->
+	 	 			<input type="radio" class="layerGroup" value="Real_Estate_Case_0" name="layerGroup" checked="checked">
+	 	 			<input type="button" value="實價登錄點位資料" class="ToggleLayer" data-id="Real_Estate_Case_0"></br>
+	 	 			<input type="radio" class="layerGroup" name="layerGroup" value="Real_Estate_Case_1">
+	 	 			<input type="button" value="實價登錄各里資料" class="ToggleLayer" data-id="Real_Estate_Case_1"></br>
+	 	 			<button class="query">點我進行選取</button>
+	 			</div>
+<!-- 	 			<div>
+	 				<button id="closeLayerlist">關閉清單</button>
+	 			</div>
+ -->
+    		</div>
+    	</div>
+			
+	</div>
+</div>
+<div id="statistic">
+	<div id="avgYear"></div>
+	<div id="avgPrice"></div>
+</div>
+<div id="container" style="position:absolute; right:0px; bottom:0px; z-index:1; height: 300px; width: 400px; margin: 0 auto"></div>
+<div class="calcite-map calcite-map-absolute">
+	<div id="viewDiv"></div>
+</div>
+</body>
+</html>
+
+
+
+
